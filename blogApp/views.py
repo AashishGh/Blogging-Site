@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 import json, datetime
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Q
 from blogApp.models import UserProfile,Category, Post
-
+from django.views.generic import  TemplateView
 from blogApp.forms import UserRegistration, UpdateProfile, UpdateProfileMeta, UpdateProfileAvatar, SaveCategory, SavePost, AddAvatar
 
 category_list = Category.objects.exclude(status = 2).all()
@@ -89,7 +90,34 @@ def profile(request):
     }
 
     return render(request,'profile.html',context)
-    
+
+# def view_post(request,pk=None):
+#     context['page_title'] = ""
+#     if pk is None:
+#         messages.error(request,"Unabale to view Post")
+#         return redirect('home-page')
+#     else:
+#         post = Post.objects.filter(id = pk).first()
+#         context['page_title'] = post.title
+#         context['post'] = post
+#     return render(request, 'view_post.html',context)  
+
+def others_profile(request, pk=None):
+    context = {
+        'page_title':"My Profile"
+    }
+    if pk is None:
+        messages.error(request,"Unabale to view Post")
+        return redirect('home-page')
+    else:
+        otheruser=User.objects.get(username=pk)
+        context['otheruser']=otheruser
+        posts=Post.objects.filter(author__username=pk)
+        context['posts']=posts
+        
+    return render(request,'othersprofile.html',context)
+
+
 @login_required
 def update_profile(request):
     context['page_title'] = "Update Profile"
@@ -290,3 +318,16 @@ def categories(request):
     context['page_title'] = "Category Management"
     context['categories'] = categories
     return render(request, 'categories.html',context)
+
+
+class SearchView(TemplateView):
+    template_name = "search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        kw = self.request.GET.get("keyword")
+        results = Post.objects.filter(
+            Q(title__icontains=kw) | Q(author__username__icontains=kw))
+        print(results)
+        context["results"] = results
+        return context

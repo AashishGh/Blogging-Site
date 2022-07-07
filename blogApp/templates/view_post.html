@@ -1,5 +1,8 @@
 {% extends "base.html" %} {% load humanize %} {% block pageContent %}
 
+
+
+
 <!--Section: Content-->
 <section class="text-center">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -9,17 +12,24 @@
                     <h4 class="card-title fw-bold"></h4>
                 </div>
                 <div class="card-body">
-                    <center>
+                    <!-- <center>
                         <img src="{% if post.banner %}{{ post.banner.url }}{% else %}{{ MEDIA_URL}}/media/default/python-django.png{% endif %}" alt="" class="img-fluid bg-gradient" id="view-post-banner">
-                    </center>
+                    </center> -->
+                    
                     <h4 class="fw-bolder mt-4 text-start">{{ post.title }}</h4>
                     <hr>
+                    <em>
                     <div class="lh-1 text-start">
+                        {% if user.id %}
+                        <span class="me-5"><small>Author: <a href="{% url 'othersprofile' post.author %}"><b>{{ post.author }}</b></a></small></span>
+                        {% else %}
                         <span class="me-5"><small>Author: <b>{{ post.author }}</b></small></span>
+                        {%endif%}
                         <span class="me-5"><small>Category: <b>{{ post.category }}</b></small></span>
                         <span><small><i class="fa fa-calendar-day"></i> Published: <b>{{ post.date_added|date:"F d, Y h:i A" }}</b></small></span>
 
                     </div>
+                    </em>
                     <div class="clear-fix py-3"></div>
                     <div>{{ post.blog_post|safe }}</div>
                 </div>

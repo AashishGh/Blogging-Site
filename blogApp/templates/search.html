@@ -5,7 +5,7 @@
     <h4 class="mb-5"><strong>All Posts</strong></h4>
 
     <div class="row">
-        {% for post in posts %}
+        {% for post in results %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card shadow border">
                 <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
@@ -15,7 +15,7 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <a href="{% url 'view-post' post.id %}"><h5 class="card-title">{{ post.title }}</h5></a>
+                    <h5 class="card-title">{{ post.title }}</h5>
                     <div class="card-text truncate-3">{{ post.blog_post|safe }} </div>
                     <a href="{% url 'view-post' post.id %}" class="btn btn-primary">Read</a>
                 </div>
@@ -26,7 +26,7 @@
 
     </div>
     {% if not posts %}
-    <center>No Blogs has been posted yet</center>
+    <center>No result found.</center>
     {% endif %}
 
 </section>

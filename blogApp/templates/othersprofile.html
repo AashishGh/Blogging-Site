@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block pageContent%}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-10 col-sm-12 col-xs-12">
+            <div class="card shadow rounded-0">
+                <div class="card-header">
+                    <div class="h5 card-title fw-bold">Welcome to {{otheruser.username}} {{otheruser.first_name}} Profile</div>
+                </div>
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="{{ otheruser.profile.avatar.url }}" alt="User-image" id="user-img-profile" class="img-thumbnail img-fluid">
+                                <!-- <center><a href="{% url 'update-avatar'%}">Update Avatar</a></center> -->
+                            </div>
+                            <div class="col-md-8">
+                                <dl>
+                                    <dt class="text-muted">Fullname</dt>
+                                    <dd class="ps-4">{{ otheruser.first_name }} {{ otheruser.last_name }}</dd>
+                                    <dt class="text-muted">Birthday</dt>
+                                    <dd class="ps-4">{{ otheruser.profile.dob|date:"F d, Y" }}</dd>
+                                    <dt class="text-muted">Contact #</dt>
+                                    <dd class="ps-4">{{ otheruser.profile.contact }}</dd>
+                                    <dt class="text-muted">Address</dt>
+                                    <dd class="ps-4">{{ otheruser.profile.address }}</dd>
+                                    <!-- <dt class="text-muted">Email</dt>
+                                    <dd class="ps-4">{{ otheruser.email }}</dd> -->
+                                    <dt class="text-muted">Username</dt>
+                                    <dd class="ps-4">{{ otheruser.username }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="card-footer">
+                    <div class="d-flex w-100 text-end justify-content-end">
+                        <a href="{% url 'update-profile' %}" class="btn btn btn-primary btn-sm bg-gradient rounded-0">Update Profile</a>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<section class="text-center">
+    <h4 class="mb-5"><strong>All Posts</strong></h4>
+
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow border">
+                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                    <img src="{% if post.banner %}{{ post.banner.url }}{% else %}{{ MEDIA_URL}}/media/default/python-django.png{% endif %}" class="img-fluid post-banner bg-gradient bg-dark" />
+                    <a href="#!">
+                        <div class="mask" style="background-color: rgba(223, 37, 37, 0.15);"></div>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'view-post' post.id %}"> <h5 class="card-title">{{ post.title }}</h5></a>
+                    <div class="card-text truncate-3">{{ post.blog_post|safe }} </div>
+                    <a href="{% url 'view-post' post.id %}" class="btn btn-primary">Read</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+{% endblock pageContent%}
