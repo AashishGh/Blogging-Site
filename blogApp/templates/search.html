@@ -2,7 +2,7 @@
 
 <!--Section: Content-->
 <section class="text-center">
-    <h4 class="mb-5"><strong>All Posts</strong></h4>
+    <h4 class="mb-5"><strong>Your Search results for '{{query}}':</strong></h4>
 
     <div class="row">
         {% for post in results %}
@@ -25,7 +25,7 @@
 
 
     </div>
-    {% if not posts %}
+    {% if not results %}
     <center>No result found.</center>
     {% endif %}
 

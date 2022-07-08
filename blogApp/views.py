@@ -330,4 +330,5 @@ class SearchView(TemplateView):
             Q(title__icontains=kw) | Q(author__username__icontains=kw))
         print(results)
         context["results"] = results
+        context["query"]=kw
         return context
