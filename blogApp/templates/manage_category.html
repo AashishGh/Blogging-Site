@@ -6,7 +6,7 @@
                 <h4 class="card-title fw-bold">{% if category.id %}Update Category Details{% else %} Add New Category{% endif %}</h4>
             </div>
             <div class="card-body">
-                <form action="" id="category-form">
+                <form action="" id="category-form" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="id" value="{{ category.id }}">
                     <div class="form-group mb-3">
@@ -33,14 +33,21 @@
                             {% endif %}
                         </select>
                     </div>
+
+                    <div class="card-footer">
+                        <div class="d-flex w-100 justify-content-end">
+                            <button class="btn btn-sm btn-primary bg-gradient me-2 rounded-0" form="category-form"><i class="fa fa-save"></i> Save</button>
+                            <a class="btn btn-sm btn-light bg-gradient border rounded-0" href="{% url 'category-mgt' %}"><i class="fa fa-angle-left"></i> Cancel</a>
+                        </div>
+                    </div>
                 </form>
             </div>
-            <div class="card-footer">
+            <!-- <div class="card-footer">
                 <div class="d-flex w-100 justify-content-end">
                     <button class="btn btn-sm btn-primary bg-gradient me-2 rounded-0" form="category-form"><i class="fa fa-save"></i> Save</button>
                     <a class="btn btn-sm btn-light bg-gradient border rounded-0" href="{% url 'category-mgt' %}"><i class="fa fa-angle-left"></i> Cancel</a>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

@@ -2,10 +2,10 @@
 
 <!--Section: Content-->
 <section class="text-center">
-    <h4 class="mb-5"><strong>Your Search results for '{{query}}':</strong></h4>
+    <h3 class="mb-4"><strong><b>Your Likes :</b></strong></h3>
 
     <div class="row">
-        {% for post in results %}
+        {% for like in likes %}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card shadow border">
                 <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
@@ -15,24 +15,15 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <div class="card-text truncate-3"> <b>{{ post.blog_post|safe }} </b></div>
-                    <a href="{% url 'view-post' post.id %}" class="btn btn-primary">Read</a>
-                    {%if user.id %}
-                    {% if post.id in liked_posts_id %}
-                    <form class="form-inline my-2 my-lg-0" action="{% url 'unlike' post.id %}" method="GET">
+                    <h5 class="card-title">{{ like.post.title }}</h5>
+                    <div class="card-text truncate-3"><b>{{ like.post.blog_post|safe }} </b> </div>
+                    <a href="{% url 'view-post' like.post.id %}" class="btn btn-primary">Read</a>
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'unlike' like.post.id %}" method="GET">
                         <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
                         <button class="btn btn-info my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
                             <i class="fa fa-thumbs-up"></i>
-                        </button><b>{{post.likes}} likes  </b>
+                        </button><b>{{like.post.likes}} likes  </b>
                         </form>
-                    {% else %}
-                    <form class="form-inline my-2 my-lg-0" action="{% url 'like' post.id %}" method="GET">
-                        <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
-                        <button class="btn btn-light my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
-                            <i class="fa fa-thumbs-up"></i>
-                        </button><b>{{post.likes}} likes  </b>
-                        </form> {%endif%} {%endif%}  
                 </div>
             </div>
         </div>

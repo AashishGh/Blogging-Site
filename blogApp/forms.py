@@ -125,7 +125,7 @@ class SavePost(forms.ModelForm):
     title = forms.Textarea()
     blog_post = forms.Textarea()
     status = forms.ChoiceField(help_text = "Status Field is required.", choices = (('1','Published'), ('2','Unpublished')))
-
+    
     def __init__(self, *args, **kwargs):
         super(SavePost, self).__init__(*args, **kwargs)
 

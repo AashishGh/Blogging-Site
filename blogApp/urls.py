@@ -7,6 +7,10 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('redirect-admin', RedirectView.as_view(url="/admin"), name="redirect-admin"),
     path('', views.home, name="home-page"),
+    
+    path('like<int:pk>', views.like, name="like"),
+    path('unlike<int:pk>', views.unlike, name="unlike"),
+    path('liked-posts', views.liked_post, name="liked-post"),
     path('login', auth_views.LoginView.as_view(template_name="login.html",
          redirect_authenticated_user=True), name='login'),
     path('userlogin', views.login_user, name="login-user"),
@@ -20,8 +24,8 @@ urlpatterns = [
     path(r'manage_category/<int:pk>', views.manage_category, name='edit-category'),
     path('save_category', views.save_category, name='save-category'),
     path('delete_category', views.delete_category, name='delete-category'),
-    path('post_mgt', views.post_mgt, name='post-mgt'),
-    path('manage_post', views.manage_post, name='manage-post'),
+    path('post-mgt', views.post_mgt, name='post-mgt'),
+    path('add_post', views.add_post, name='manage-post'),
     path(r'manage_post/<int:pk>', views.manage_post, name='edit-post'),
     path('save_post', views.save_post, name='save-post'),
     path('delete_post', views.delete_post, name='delete-post'),

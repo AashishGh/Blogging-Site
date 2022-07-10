@@ -52,15 +52,30 @@
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card shadow border">
                 <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                    <img src="{% if post.banner %}{{ post.banner.url }}{% else %}{{ MEDIA_URL}}/media/default/python-django.png{% endif %}" class="img-fluid post-banner bg-gradient bg-dark" />
+                    <img src="{% if post.banner %}{{ post.banner.url }}{% else %}{{ MEDIA_URL}}/media/default/blogbanner.png{% endif %}" class="img-fluid post-banner bg-gradient bg-dark" />
                     <a href="#!">
                         <div class="mask" style="background-color: rgba(223, 37, 37, 0.15);"></div>
                     </a>
                 </div>
                 <div class="card-body">
                     <a href="{% url 'view-post' post.id %}"> <h5 class="card-title">{{ post.title }}</h5></a>
-                    <div class="card-text truncate-3">{{ post.blog_post|safe }} </div>
+                    <div class="card-text truncate-3"><b>{{ post.blog_post|safe }}</b> </div>
                     <a href="{% url 'view-post' post.id %}" class="btn btn-primary">Read</a>
+                    {%if user.id %}
+                    {% if post.id in liked_posts_id %}
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'unlike' post.id %}" method="GET">
+                        <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
+                        <button class="btn btn-info my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
+                            <i class="fa fa-thumbs-up"></i>
+                        </button><b>{{post.likes}} likes  </b>
+                        </form>
+                    {% else %}
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'like' post.id %}" method="GET">
+                        <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
+                        <button class="btn btn-light my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
+                            <i class="fa fa-thumbs-up"></i>
+                        </button><b>{{post.likes}} likes  </b>
+                        </form> {%endif%} {%endif%}  
                 </div>
             </div>
         </div>

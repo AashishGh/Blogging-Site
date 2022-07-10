@@ -9,7 +9,7 @@ import json, datetime
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
-from blogApp.models import UserProfile,Category, Post
+from blogApp.models import UserProfile,Category, Post,Like
 from django.views.generic import  TemplateView
 from blogApp.forms import UserRegistration, UpdateProfile, UpdateProfileMeta, UpdateProfileAvatar, SaveCategory, SavePost, AddAvatar
 
@@ -43,13 +43,73 @@ def login_user(request):
 #Logout
 def logoutuser(request):
     logout(request)
-    return redirect('/')
-def home(request):
+    return redirect("home-page")
+def home(request,pk=None):
     context['page_title'] = 'Home'
     posts = Post.objects.filter(status = 1).all()
     context['posts'] = posts
+    if request.user.id:
+        user = User.objects.get(id= request.user.id)
+        likes=Like.objects.filter(author=user)
+        liked_posts_id=[]
+        for like in likes.iterator():
+            liked_posts_id.append(like.post.id)
+
+        
+        context['liked_posts_id']=liked_posts_id
     print(request.user)
+    
     return render(request, 'home.html',context)
+
+def like(request,pk=None):
+    if pk is not None:
+        post_liked = Post.objects.filter(id = pk).first()
+        post_liked.likes=post_liked.likes + 1
+        post_liked.save()
+        
+        user = User.objects.get(id= request.user.id)
+        likes = Like.objects.create(author=user, post=post_liked)
+        likes.save()
+        
+        likes=Like.objects.filter(author=user)
+        liked_posts_id=[]
+        for like in likes.iterator():
+            liked_posts_id.append(like.post.id)
+
+        
+        context['liked_posts_id']=liked_posts_id
+
+        return redirect("home-page")
+    return render(request, 'home.html',context)
+
+def unlike(request,pk=None):
+    if pk is not None:
+        post_liked = Post.objects.filter(id = pk).first()
+        post_liked.likes=post_liked.likes - 1
+        post_liked.save()
+        
+        user = User.objects.get(id= request.user.id)
+        p = Like.objects.filter(author=user, post=post_liked)
+        p.delete()
+        
+        likes=Like.objects.filter(author=user)
+        liked_posts_id=[]
+        for like in likes.iterator():
+            liked_posts_id.append(like.post.id)
+
+        
+        context['liked_posts_id']=liked_posts_id
+
+        return redirect("home-page")
+    return render(request, 'home.html',context)
+
+@login_required
+def liked_post(request):
+    user = User.objects.get(id= request.user.id)
+    likes=Like.objects.filter(author=user)
+    # liked_posts=likes.post.objects.all()
+    context["likes"]=likes
+    return render(request, 'liked_post.html',context)
 
 def registerUser(request):
     user = request.user
@@ -114,6 +174,15 @@ def others_profile(request, pk=None):
         context['otheruser']=otheruser
         posts=Post.objects.filter(author__username=pk)
         context['posts']=posts
+        user = User.objects.get(id=request.user.id)
+        likes=Like.objects.filter(author=user)
+        liked_posts_id=[]
+        for like in likes.iterator():
+            liked_posts_id.append(like.post.id)
+
+        
+        context['liked_posts_id']=liked_posts_id
+        
         
     return render(request,'othersprofile.html',context)
 
@@ -144,6 +213,8 @@ def update_profile(request):
             context['form1'] = form
             form = UpdateProfile(instance=request.user)
     return render(request,'update_profile.html',context)
+
+
 
 
 @login_required
@@ -227,6 +298,10 @@ def delete_category(request):
     return HttpResponse(json.dumps(resp),content_type="application/json")
 
 #Post
+
+ 
+
+
 @login_required
 def post_mgt(request):
     if request.user.profile.user_type == 1:
@@ -238,19 +313,76 @@ def post_mgt(request):
     context['posts'] = posts
     return render(request, 'post_mgt.html',context)
 
+# @login_required
+# def manage_post(request,pk=None):
+#     # post = post.objects.all()
+#     if pk == None:
+#         post = {}
+#     elif pk > 0:
+#         post = Post.objects.filter(id=pk).first()
+#     else:
+#         post = {}
+#     context['page_title'] = "Manage post"
+#     context['post'] = post
+
+#     return render(request, 'manage_post.html',context)
+
+
+@login_required
+def add_post(request,pk=None):
+    # context['page_title'] = "Update Profile"
+    # if pk == None:
+    #     post = {}
+    # elif pk > 0:
+    #     post = Post.objects.filter(id=pk).first()
+    # else:
+    #     post = {}
+    
+    # context['post'] = post
+    form = SavePost()
+    if request.method == 'POST':
+        data = request.POST
+        # if data['password1'] == '':
+        # data['password1'] = '123'
+        form = SavePost(data)
+        if form.is_valid():
+            form.save()
+        
+            messages.success(request,"Your Profile has been updated successfully")
+            return redirect("post-mgt")
+        context['form']=form  
+    
+    return render(request,'add_post.html',context)
+
 @login_required
 def manage_post(request,pk=None):
-    # post = post.objects.all()
+    context['page_title'] = "Update Profile"
     if pk == None:
         post = {}
     elif pk > 0:
         post = Post.objects.filter(id=pk).first()
     else:
         post = {}
-    context['page_title'] = "Manage post"
+    
     context['post'] = post
+    form = SavePost(request.FILES,instance=post)
+    if request.method == 'POST':
+        data = request.POST
+        # if data['password1'] == '':
+        # data['password1'] = '123'
+        form = SavePost(data,request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+        
+            messages.success(request,"Your Profile has been updated successfully")
+            return redirect("post-mgt")
+        context['form']=form  
+    
+    return render(request,'manage_post.html',context)
 
-    return render(request, 'manage_post.html',context)
+
+
+
 
 @login_required
 def save_post(request):
@@ -331,4 +463,12 @@ class SearchView(TemplateView):
         print(results)
         context["results"] = results
         context["query"]=kw
+        user = User.objects.get(id= self.request.user.id)
+        likes=Like.objects.filter(author=user)
+        liked_posts_id=[]
+        for like in likes.iterator():
+            liked_posts_id.append(like.post.id)
+
+        
+        context['liked_posts_id']=liked_posts_id
         return context
