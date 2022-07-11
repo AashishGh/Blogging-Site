@@ -172,7 +172,7 @@ def others_profile(request, pk=None):
     else:
         otheruser=User.objects.get(username=pk)
         context['otheruser']=otheruser
-        posts=Post.objects.filter(author__username=pk)
+        posts=Post.objects.filter(status=1,author__username=pk)
         context['posts']=posts
         user = User.objects.get(id=request.user.id)
         likes=Like.objects.filter(author=user)
@@ -459,7 +459,7 @@ class SearchView(TemplateView):
         context = super().get_context_data(**kwargs)
         kw = self.request.GET.get("keyword")
         results = Post.objects.filter(
-            Q(title__icontains=kw) | Q(author__username__icontains=kw))
+            Q(ststus=1) & (Q(title__icontains=kw) | Q(author__username__icontains=kw)))
         print(results)
         context["results"] = results
         context["query"]=kw
