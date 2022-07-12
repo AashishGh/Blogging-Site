@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% load humanize %} {% block pageContent %}
+
+<!--Section: Content-->
+<section class="text-center">
+    <h4 class="mb-5"><strong>Your Search results for '{{query}}':</strong></h4>
+
+    <div class="row">
+        {% for post in results %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow border">
+                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                    <img src="{% if post.banner %}{{ post.banner.url }}{% else %}{{ MEDIA_URL}}/media/default/blogbanner.png{% endif %}" class="img-fluid post-banner bg-gradient bg-dark" />
+                    <a href="#!">
+                        <div class="mask" style="background-color: rgba(223, 37, 37, 0.15);"></div>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <div class="card-text truncate-3"> <b>{{ post.blog_post|safe }} </b></div>
+                    <a href="{% url 'view-post' post.id %}" class="btn btn-primary">Read</a>
+                    {%if user.id %}
+                    {% if post.id in liked_posts_id %}
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'unlike' post.id %}" method="GET">
+                        <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
+                        <button class="btn btn-info my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
+                            <i class="fa fa-thumbs-up"></i>
+                        </button><b>{{post.likes}} likes  </b>
+                        </form>
+                    {% else %}
+                    <form class="form-inline my-2 my-lg-0" action="{% url 'like' post.id %}" method="GET">
+                        <!-- <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required> -->
+                        <button class="btn btn-light my-2 my-sm-0" type="submit" style="background-color:rgb(51, 9, 202);">
+                            <i class="fa fa-thumbs-up"></i>
+                        </button><b>{{post.likes}} likes  </b>
+                        </form> {%endif%} {%endif%}  
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+    </div>
+    {% if not results %}
+    <center>No result found.</center>
+    {% endif %}
+
+</section>
+
+
+</div> --> {% endblock pageContent %}
