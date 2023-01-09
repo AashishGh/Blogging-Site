@@ -342,8 +342,8 @@ def add_post(request,pk=None):
     form = SavePost()
     if request.method == 'POST':
         data = request.POST
-        # if data['password1'] == '':
-        # data['password1'] = '123'
+        category_list=Category.objects.all().values("name")
+        context['category_list']=category_list
         form = SavePost(data)
         if form.is_valid():
             form.save()
@@ -459,16 +459,17 @@ class SearchView(TemplateView):
         context = super().get_context_data(**kwargs)
         kw = self.request.GET.get("keyword")
         results = Post.objects.filter(
-            Q(ststus=1) & (Q(title__icontains=kw) | Q(author__username__icontains=kw)))
+            Q(status=1) & (Q(title__icontains=kw) | Q(author__username__icontains=kw)))
         print(results)
         context["results"] = results
         context["query"]=kw
-        user = User.objects.get(id= self.request.user.id)
-        likes=Like.objects.filter(author=user)
-        liked_posts_id=[]
-        for like in likes.iterator():
-            liked_posts_id.append(like.post.id)
+        if request.user.id:
+            user = User.objects.get(id= self.request.user.id)
+            likes=Like.objects.filter(author=user)
+            liked_posts_id=[]
+            for like in likes.iterator():
+                liked_posts_id.append(like.post.id)
 
-        
-        context['liked_posts_id']=liked_posts_id
+
+            context['liked_posts_id']=liked_posts_id
         return context
