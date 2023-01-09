@@ -342,8 +342,8 @@ def add_post(request,pk=None):
     form = SavePost()
     if request.method == 'POST':
         data = request.POST
-        category_list=Category.objects.all().values("name")
-        context['category_list']=category_list
+        # category_list=Category.objects.all().values("name")
+        # context['category_list']=category_list
         form = SavePost(data)
         if form.is_valid():
             form.save()

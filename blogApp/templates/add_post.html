@@ -11,10 +11,12 @@
             <div class="card-body">
                 <form action="" id="post-form" method="POST" >
                     {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ post.id }}"> {% if post.author %}
-                    <input type="hidden" name="author" value="{{ post.author.id }}">
-                    <span class="text-muted">Authored by: <b>{{ request.user.username }}</b></span> {% else %}
-                    <input type="hidden" name="author" value="{{ user.id }}"> {% endif %}
+                    <input type="hidden" name="id" value="{{ post.id }}"> 
+                    {% comment %} {% if post.author %} {% endcomment %}
+                    {% comment %} <input type="hidden" name="author" value="{{ post.author.id }}">
+                    <span class="text-muted">Authored by: <b>{{ post.author }}</b></span> {% else %} {% endcomment %}
+                    <input type="hidden" name="author" value="{{ user.id }}"> 
+                    {% comment %} % endif %} {% endcomment %}
                     <div class="form-group mb-3">
                         <label for="title" class="control-label">Title</label>
                         <input type="text" class="form-control rounded-0" id="title" name="title" value="" required>
@@ -27,9 +29,9 @@
                             {% else %}
                             <option value="" disabled></option>
                             {% endif %}
-                            {% for category in category_list %}
-                            {% if post.category == category.id %}
-                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                            {% for category in categories %}
+                            {% if post.category == category.id %} 
+                            <option value="{{ category.id }}" selected>if{{ category.name }}</option>
                             {% else %}
                             <option value="{{ category.id }}">{{ category.name }}</option>
                             {% endif %}
